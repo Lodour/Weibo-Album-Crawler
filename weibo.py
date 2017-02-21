@@ -6,7 +6,6 @@ from collections import namedtuple
 import requests
 
 from settings import *
-from utils import *
 
 Album = namedtuple('Album', 'uid id name size type')
 Photo = namedtuple('Photo', 'name feed url')

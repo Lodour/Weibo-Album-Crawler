@@ -14,12 +14,10 @@ Photo = namedtuple('Photo', 'name feed url')
 def get_rand():
     """
     返回一个特定的随机数
-    经过测试，参数中的__rnd实际上是时间戳+三位随机数
+    经过测试，参数中的__rnd实际上是以毫秒为单位的时间戳
     """
-    from time import time as t
-    from random import randint as r
-    __rnd = '{stamp}{rnd}'
-    return __rnd.format(stamp=int(t()), rnd=r(0, 999))
+    from time import time
+    return int(round(time() * 1000))
 
 
 def get_page(url, params=None, cookies=None, attr='text'):

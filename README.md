@@ -1,5 +1,5 @@
-# Weibo-Album-Crawler
-A crawler to download weibo albums based on python with requests, threading.
+# Weibo Album Crawler ![python](https://img.shields.io/badge/python-3.5-ff69b4.svg)
+新浪微博相册爬虫。
 
 _API Version: 2017.2.21_
 

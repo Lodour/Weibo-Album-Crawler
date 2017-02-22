@@ -1,7 +1,7 @@
 # coding=utf-8
 import os
-from time import sleep
 from collections import namedtuple
+import concurrent.futures
 
 import requests
 
@@ -9,6 +9,22 @@ from settings import *
 
 Album = namedtuple('Album', 'uid id name size type')
 Photo = namedtuple('Photo', 'name feed url')
+
+
+def delay(second):
+    """
+    装饰器，将某个函数执行后延迟second秒
+    """
+    from time import sleep
+
+    def _delay(func):
+        def delayed_func(*args, **kwargs):
+            ret = func(*args, **kwargs)
+            sleep(second)
+            return ret
+        return delayed_func
+
+    return _delay
 
 
 def get_rand():
@@ -108,6 +124,9 @@ def get_large_photos(album, photo_ids):
     """
     根据相册及图片ids返回大图数据
     """
+    if not photo_ids:
+        return list()
+
     url = 'http://photo.weibo.com/photos/get_multiple'
     params = {
         'uid': album.uid,
@@ -116,10 +135,15 @@ def get_large_photos(album, photo_ids):
     }
 
     data = get_json(url, params)
-    large = [Photo(name=data[i]['pic_name'],
-                   feed=data[i].get('feed_id'),
-                   url=data[i]['large_pic_tmp'])
-             for i in photo_ids]
+    large = list()
+    for i in photo_ids:
+        if data[i]:
+            large.append(Photo(name=data[i]['pic_name'],
+                               feed=data[i].get('feed_id'),
+                               url=data[i]['large_pic_tmp']))
+        else:
+            err = '《%s》的图片 %s 不存在或已被删除' % (album.name, i)
+            log.warning(Fore.YELLOW + err)
     log.info(Fore.BLUE + '获取到 {0} 个大图'.format(len(large)))
     return large
 
@@ -160,6 +184,7 @@ def get_picname(photo):
     return '_'.join(l)
 
 
+@delay(wait_second)
 def down_pic(photo, path):
     """
     根据相册及图片，进行下载操作
@@ -167,13 +192,13 @@ def down_pic(photo, path):
     """
     filename = get_picname(photo)
     path = os.path.join(path, filename)
+    is_downloaded = False
     if not os.path.exists(path):
+        is_downloaded = True
         content = get_page(photo.url, attr='content')
         with open(path, 'wb') as f:
             f.write(content)
-        log.info(Fore.GREEN + 'Save {0}'.format(path))
-    sleep(wait_second)
-    sem.release()
+    return is_downloaded, path
 
 
 def pagenavi(total, count):
@@ -185,36 +210,53 @@ def pagenavi(total, count):
         yield page + 1, max_page
 
 
-def run(uid, page_size=100):
+def down_album(album, page_size=100):
     """
-    执行对uid的操作
+    执行下载album的操作
     每页请求的图片个数page_size默认为100（太大了会被服务器断开连接）
     """
-    albums = get_album_list(uid)
-    for album in albums:
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_to_pic = dict()
 
-        # 对每个相册分页
+        # 对相册进行分页
         for page, tot in pagenavi(album.size, page_size):
             log.info(Fore.CYAN + '《{0}》{1}/{2}'.format(album.name, page, tot))
 
-            # 获取该页包含的图片id及大图
+            # 获取该页包含图片id及大图
             ids = get_photo_ids(album, page_size, page)
-            if not ids:
-                continue
-            large = get_large_photos(album, ids)
+            large_photos = get_large_photos(album, ids)
 
-            # 下载图片
+            # 开始任务
             album_path = get_album_path(album)
-            for p in large:
-                sem.acquire()
-                threading.Thread(target=down_pic, args=(p, album_path)).start()
+            future = {executor.submit(down_pic, pic, album_path): pic
+                      for pic in large_photos}
+            future_to_pic.update(future)
+        else:
+            tot = vars().get('tot', 0)
+            log.info(Fore.CYAN + '《{0}》共发现 {1} 页'.format(album.name, tot))
 
-        # 等待所有线程结束
-        for thread in threading.enumerate():
-            if not thread is threading.currentThread():
-                thread.join()
+        # 等待任务完成
+        for future in concurrent.futures.as_completed(future_to_pic):
+            pic = future_to_pic[future]
+            try:
+                is_downloaded, path = future.result()
+            except Exception as e:
+                msg = '微博 %s 中的图片 %s 产生了异常: %s' % (pic.feed, pic.name, e)
+                log.info(Fore.RED + msg)
+            else:
+                style = is_downloaded and Style.NORMAL or Style.DIM
+                log.info(Fore.GREEN + style + path)
+        else:
+            color = Fore.GREEN + Style.BRIGHT
+            log.info(color + '《{0}》 已完成'.format(album.name))
 
-        log.info(Fore.GREEN + Style.BRIGHT + '《{0}》 已完成'.format(album.name))
+
+def run(uid):
+    """
+    执行对uid的操作
+    """
+    for album in get_album_list(uid):
+        down_album(album)
     log.info(Fore.GREEN + Style.BRIGHT + '全部任务已完成')
 
 

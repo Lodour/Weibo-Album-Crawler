@@ -4,22 +4,16 @@ from colorama import init as ca_init
 from colorama import Fore, Style
 import threading
 
-# 设置最大线程数
-max_threading = 25
-sem = threading.BoundedSemaphore(max_threading)
-
 # 下载间歇(s)
-wait_second = 0.5
+wait_second = 0
 
 # 设置log
 log.basicConfig(
     level=log.INFO,
-    format=''.join([Style.DIM,
-                    '[%(asctime)s] ',
-                    Style.NORMAL,
-                    '%(message)s',
+    format=''.join([Style.DIM, '[%(asctime)s] ',
+                    Style.NORMAL, '%(message)s',
                     Style.RESET_ALL]),
-    datefmt='%T',
+    datefmt='%T', 
 )
 log.getLogger("requests").setLevel(log.WARNING)
 

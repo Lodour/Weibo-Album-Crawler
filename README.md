@@ -26,9 +26,11 @@ _API Version: 2017.2.21_
 
 2. 有时速度会比较慢，`Ctrl + C`重新运行即可
 
-3. 若经常出错请更换cookies
+3. 若经常出错请更换Cookies
 
-4. 默认线程数`25`，线程下载间歇`0.5s`，可以在`settings.py`中修改
+4. 根据[官方文档](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor)，默认线程数为**处理器数量的5倍**，如有需要请自行添加参数`max_workers`。
+
+5. 下载操作默认不延时，如经常卡住或Cookies失效，请在`settings.py`中修改`wait_second`。
 
 ## License
 [MIT License](https://github.com/Lodour/Weibo-Album-Crawler/blob/master/LICENSE)
@@ -37,8 +39,16 @@ _API Version: 2017.2.21_
 - [ ] 相同`feed_id`的图片按索引顺序命名
 - [ ] 保存的图片按点赞数排序
 - [ ] 封装为类
+- [ ] 优化对异常的处理
 
 ## Update
+### 2017-2-22
+1. 多线程更改为使用`concurrent.futures.ThreadPoolExecutor`
+
+2. 改进了部分逻辑
+
+3. 修复当图片不存在或删除时的异常处理
+
 ### 2017-2-21
 Initial commit
 

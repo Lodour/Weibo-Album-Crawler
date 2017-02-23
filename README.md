@@ -1,7 +1,5 @@
 # Weibo Album Crawler ![python](https://img.shields.io/badge/python-3.5-ff69b4.svg)
-新浪微博相册爬虫。
-
-_API Version: 2017.2.21_
+新浪微博相册大图多线程爬虫。
 
 ## Usage
 1. `git clone git@github.com:Lodour/Weibo-Album-Crawler.git`
@@ -24,15 +22,17 @@ _API Version: 2017.2.21_
 9. 相册保存在同目录下的`downloads`文件夹内
 
 ## Hint
-1. API可能会失效，具体请查看本页面的 _API Version_
+* API可能会失效，一般而言最近一次Commit的时候是有效的
 
-2. 有时速度会比较慢，`Ctrl + C`重新运行即可
+* 有时速度会比较慢，排除图片较大的情况时，`Ctrl + Z`重新运行即可
 
-3. 若经常出错请更换Cookies
+* 根据[官方文档](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor)，默认线程数为**处理器数量的5倍**，如有需要请自行添加参数`max_workers`
 
-4. 根据[官方文档](https://docs.python.org/3/library/concurrent.futures.html#concurrent.futures.ThreadPoolExecutor)，默认线程数为**处理器数量的5倍**，如有需要请自行添加参数`max_workers`。
+* 下载操作默认不延时，如经常卡住或Cookies失效，请在`settings.py`中修改`wait_second`
 
-5. 下载操作默认不延时，如经常卡住或Cookies失效，请在`settings.py`中修改`wait_second`。
+* 已经下载过的图片会自动跳过
+
+* 如果发现的图片数量和相册图片数量不符，是因为存在重复的图片
 
 ## License
 [MIT License](https://github.com/Lodour/Weibo-Album-Crawler/blob/master/LICENSE)

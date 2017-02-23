@@ -236,16 +236,19 @@ def down_album(album, page_size=100):
             log.info(Fore.CYAN + '《{0}》共发现 {1} 页'.format(album.name, tot))
 
         # 等待任务完成
+        cound, total = 0, len(future_to_pic)
         for future in concurrent.futures.as_completed(future_to_pic):
             pic = future_to_pic[future]
             try:
+                cound += 1
+                count_info = '%d/%d ' % (cound, total)
                 is_downloaded, path = future.result()
             except Exception as e:
                 msg = '微博 %s 中的图片 %s 产生了异常: %s' % (pic.feed, pic.name, e)
-                log.info(Fore.RED + msg)
+                log.info(Fore.RED + count_info + msg)
             else:
                 style = is_downloaded and Style.NORMAL or Style.DIM
-                log.info(Fore.GREEN + style + path)
+                log.info(Fore.GREEN + style + count_info + path)
         else:
             color = Fore.GREEN + Style.BRIGHT
             log.info(color + '《{0}》 已完成'.format(album.name))

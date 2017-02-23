@@ -44,6 +44,9 @@
 - [ ] 优化对异常的处理
 
 ## Update
+### 2017-2-23
+1. 添加下载计数的显示
+
 ### 2017-2-22
 1. 多线程更改为使用`concurrent.futures.ThreadPoolExecutor`
 

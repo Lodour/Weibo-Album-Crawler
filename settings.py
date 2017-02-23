@@ -1,8 +1,7 @@
 # coding=utf-8
 import logging as log
-from colorama import init as ca_init
+from colorama import init
 from colorama import Fore, Style
-import threading
 
 # 下载间歇(s)
 wait_second = 0
@@ -24,4 +23,4 @@ assert COOKIES, '请在`cookies.txt`中粘贴cookies'
 COOKIES = dict((l.split('=') for l in COOKIES.split('; ')))
 
 # 命令行
-ca_init(autoreset=True)
+init(autoreset=True)

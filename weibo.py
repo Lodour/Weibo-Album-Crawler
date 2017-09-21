@@ -138,9 +138,11 @@ def get_large_photos(album, photo_ids):
     large = list()
     for i in photo_ids:
         if data[i]:
-            large.append(Photo(name=data[i]['pic_name'],
+            pic_host, pic_name = data[i]['pic_host'], data[i]['pic_name']
+            pic_url = '%s/large/%s' % (pic_host, pic_name)
+            large.append(Photo(name=pic_name,
                                feed=data[i].get('feed_id'),
-                               url=data[i]['large_pic_tmp']))
+                               url=pic_url))
         else:
             err = '《%s》的图片 %s 不存在或已被删除' % (album.name, i)
             log.warning(Fore.YELLOW + err)

@@ -1,7 +1,15 @@
+# Vituralenv
 env/
 
-__pycache__/
+# Pycharm
+.idea/
 
+# Compile result
+__pycache__/
+*.pyc
+
+# Download files
 downloads/
 
-*.pyc
+# Auth related files
+cookies.txt

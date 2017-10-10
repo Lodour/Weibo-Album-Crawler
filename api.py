@@ -98,9 +98,9 @@ class Weibo(object):
         """
         params = {
             'uid': uid,
-            'ids': ','.join(ids),
+            'ids': ','.join(map(str, ids)),
             'type': type
         }
         response = Weibo.get(Url.LARGE_LIST, params=params)
         data = json.loads(response.content.decode('utf-8'))
-        return data['data'].values()
+        return list(data['data'].values())

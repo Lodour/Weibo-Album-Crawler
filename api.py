@@ -17,6 +17,10 @@ class Pattern(object):
     OID = re.compile(r"\$CONFIG\['oid'\]='(?P<oid>\d+)';")
 
 
+class Formatter(object):
+    LARGE_URL = '{host}/large/{name}'
+
+
 class Weibo(object):
     """ 微博API """
 
@@ -104,3 +108,13 @@ class Weibo(object):
         response = Weibo.get(Url.LARGE_LIST, params=params)
         data = json.loads(response.content.decode('utf-8'))
         return list(data['data'].values())
+
+    @staticmethod
+    def make_large_url(pic_host, pic_name):
+        """生成大图下载url
+
+        :param pic_host: 图片host
+        :param pic_name: 图片name
+        :return: str
+        """
+        return Formatter.LARGE_URL.format(host=pic_host, name=pic_name)

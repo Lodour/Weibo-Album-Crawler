@@ -11,5 +11,6 @@ __pycache__/
 # Download files
 downloads/
 
-# Auth related files
+# Private files
 cookies.txt
+targets.txt

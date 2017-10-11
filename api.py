@@ -18,7 +18,7 @@ class Pattern(object):
 
 
 class Formatter(object):
-    LARGE_URL = '{host}/large/{name}'
+    LARGE_URL = '{host}/large/{name}'.format
 
 
 class Weibo(object):
@@ -117,4 +117,4 @@ class Weibo(object):
         :param pic_name: 图片name
         :return: str
         """
-        return Formatter.LARGE_URL.format(host=pic_host, name=pic_name)
+        return Formatter.LARGE_URL(host=pic_host, name=pic_name)

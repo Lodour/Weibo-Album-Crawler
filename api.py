@@ -38,6 +38,17 @@ class Weibo(object):
         return requests.get(*args, **kwargs)
 
     @staticmethod
+    def get_json(*args, **kwargs):
+        """获取response中的json数据
+
+        :param args: see get
+        :param kwargs: see get
+        :return: dict
+        """
+        content = Weibo.get(*args, **kwargs).content
+        return json.loads(content.decode('utf-8'))
+
+    @staticmethod
     def fetch_uid(url):
         """从任意用户的主页获取其uid，即html中的oid
 
@@ -63,8 +74,7 @@ class Weibo(object):
             'count': count,
             '__rnd': __rnd or get_ms()
         }
-        response = Weibo.get(Url.ALBUM_LIST, params=params)
-        data = json.loads(response.content.decode('utf-8'))
+        data = Weibo.get_json(Url.ALBUM_LIST, params=params)
         return data['data']['album_list']
 
     @staticmethod
@@ -87,8 +97,7 @@ class Weibo(object):
             'count': count,
             '__rnd': __rnd or get_ms()
         }
-        response = Weibo.get(Url.PHOTO_LIST, params=params)
-        data = json.loads(response.content.decode('utf-8'))
+        data = Weibo.get_json(Url.PHOTO_LIST, params=params)
         return data['data']['photo_list']
 
     @staticmethod
@@ -105,8 +114,7 @@ class Weibo(object):
             'ids': ','.join(map(str, ids)),
             'type': type
         }
-        response = Weibo.get(Url.LARGE_LIST, params=params)
-        data = json.loads(response.content.decode('utf-8'))
+        data = Weibo.get_json(Url.LARGE_LIST, params=params)
         return list(data['data'].values())
 
     @staticmethod

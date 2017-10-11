@@ -5,8 +5,8 @@ import settings
 
 
 def load_cookies():
-    """从设置中解析cookies
-
+    """
+    从设置中解析cookies
     :return: dict
     """
     assert settings.COOKIES, '请在`settings.py`中粘贴cookies'
@@ -14,9 +14,9 @@ def load_cookies():
 
 
 def init_folder(uid, name):
-    """准备文件夹
+    """
+    准备文件夹
     需要检测是否存在相同uid、不同name的情况
-
     :param uid: 用户id
     :param name: 用户微博名
     :return: str 该用户的存储文件夹名

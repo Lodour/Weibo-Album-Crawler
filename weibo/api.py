@@ -5,7 +5,7 @@ from time import time
 
 import requests
 
-from utils import load_cookies
+from weibo.utils import load_cookies
 
 
 class Url(object):
@@ -25,7 +25,9 @@ class Formatter(object):
 
 
 class Weibo(object):
-    """ 微博API """
+    """ 微博API
+    访问流程: url -> id -> albums -> photos -> large pics
+    """
 
     COOKIES = load_cookies()
 

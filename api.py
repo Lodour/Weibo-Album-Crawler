@@ -15,9 +15,11 @@ class Url(object):
 
 class Pattern(object):
     OID = re.compile(r"\$CONFIG\['oid'\]='(?P<oid>\d+)';")
+    NAME = re.compile(r"\$CONFIG\['onick'\]='(?P<name>.*)';")
 
 
 class Formatter(object):
+    INDEX_URL = 'http://weibo.com/u/{uid}'.format
     LARGE_URL = '{host}/large/{name}'.format
 
 
@@ -45,8 +47,7 @@ class Weibo(object):
         :param kwargs: see get
         :return: dict
         """
-        content = Weibo.get(*args, **kwargs).content
-        return json.loads(content.decode('utf-8'))
+        return json.loads(Weibo.get(*args, **kwargs).text)
 
     @staticmethod
     def fetch_uid(url):
@@ -55,8 +56,18 @@ class Weibo(object):
         :param url: 主页url
         :return: 用户uid
         """
-        html = Weibo.get(url).content.decode('utf-8')
-        return Pattern.OID.search(html).group('oid')
+        content = Weibo.get(url).text
+        return Pattern.OID.search(content).group('oid')
+
+    @staticmethod
+    def fetch_name(uid):
+        """获取指定用户的微博名
+
+        :param uid: 用户id
+        :return: str
+        """
+        content = Weibo.get(Formatter.INDEX_URL(uid=uid)).text
+        return Pattern.NAME.search(content).group('name')
 
     @staticmethod
     def fetch_album_list(uid, page=1, count=20, __rnd=None):

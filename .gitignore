@@ -8,9 +8,6 @@ env/
 __pycache__/
 *.pyc
 
-# Download files
-downloads/
-
 # Private files
-cookies.txt
-targets.txt
+downloads/
+settings.py

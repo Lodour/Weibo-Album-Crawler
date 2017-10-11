@@ -16,3 +16,14 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 
 # 命令行
 init(autoreset=True)
+
+# 存储目录
+STORE_PATH = './downloads'
+
+# 在这里粘贴你的cookies
+COOKIES = ''
+
+# 在这里添加目标用户的微博主页url
+TARGETS = [
+    '',
+]

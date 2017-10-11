@@ -1,6 +1,5 @@
 # coding=utf-8
 import os
-from time import time
 
 import settings
 
@@ -12,14 +11,6 @@ def load_cookies():
     """
     assert settings.COOKIES, '请在`settings.py`中粘贴cookies'
     return dict([l.split('=') for l in settings.COOKIES.split('; ')])
-
-
-def get_ms():
-    """返回毫秒时间戳
-
-    :return: int
-    """
-    return int(time() * 1000)
 
 
 def init_folder(uid, name):

@@ -1,10 +1,11 @@
 # coding=utf-8
 import json
 import re
+from time import time
 
 import requests
 
-from utils import load_cookies, get_ms
+from utils import load_cookies
 
 
 class Url(object):
@@ -70,26 +71,25 @@ class Weibo(object):
         return Pattern.NAME.search(content).group('name')
 
     @staticmethod
-    def fetch_album_list(uid, page=1, count=20, __rnd=None):
+    def fetch_album_list(uid, page=1, count=20):
         """获取用户的相册列表数据
 
         :param uid: 用户id
         :param page: 相册列表-页号
         :param count: 相册列表-页长
-        :param __rnd: 毫秒时间戳
         :return: list
         """
         params = {
             'uid': uid,
             'page': page,
             'count': count,
-            '__rnd': __rnd or get_ms()
+            '__rnd': Weibo.make_rnd()
         }
         data = Weibo.get_json(Url.ALBUM_LIST, params=params)
         return data['data']['album_list']
 
     @staticmethod
-    def fetch_photo_list(uid, album_id, type, page=1, count=30, __rnd=None):
+    def fetch_photo_list(uid, album_id, type, page=1, count=30):
         """获取相册的图片列表
         
         :param uid: 用户id
@@ -97,7 +97,6 @@ class Weibo(object):
         :param type: 相册类型
         :param page: 图片列表-页号
         :param count: 图片列表-页长
-        :param __rnd: 毫秒时间戳
         :return: list
         """
         params = {
@@ -106,7 +105,7 @@ class Weibo(object):
             'type': type,
             'page': page,
             'count': count,
-            '__rnd': __rnd or get_ms()
+            '__rnd': Weibo.make_rnd()
         }
         data = Weibo.get_json(Url.PHOTO_LIST, params=params)
         return data['data']['photo_list']
@@ -127,6 +126,14 @@ class Weibo(object):
         }
         data = Weibo.get_json(Url.LARGE_LIST, params=params)
         return list(data['data'].values())
+
+    @staticmethod
+    def make_rnd():
+        """生成__rnd参数
+
+        :return: int
+        """
+        return int(time() * 1000)
 
     @staticmethod
     def make_large_url(pic_host, pic_name):

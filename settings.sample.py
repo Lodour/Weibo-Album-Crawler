@@ -21,9 +21,10 @@ init(autoreset=True)
 STORE_PATH = './downloads'
 
 # 在这里粘贴你的cookies
-COOKIES = ''
+COOKIES = 'SINAGLOBAL=...; UM_distinctid=...; __guid=...; ...'
 
 # 在这里添加目标用户的微博主页url
 TARGETS = [
-    '',
+    'http://weibo.com/u/...',
+    'http://weibo.com/u/...',
 ]

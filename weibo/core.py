@@ -45,6 +45,11 @@ class Crawler(object):
                 self.download_album(album)
 
     def download_album(self, album):
+        """
+        下载相册
+        :param album: 相册数据
+        :return: None
+        """
         page_size, photo_count = 50, album['count']['photos']
         page_count = int(ceil(photo_count / page_size))
 
@@ -97,28 +102,29 @@ class Crawler(object):
                     })
 
             # 加载 future_to_large
-            for future in concurrent.futures.as_completed(future_to_large):
+            total = len(future_to_large)
+            for i, future in enumerate(concurrent.futures.as_completed(future_to_large)):
                 large = future_to_large[future]
+                count_msg = '%d/%d ' % (i + 1, total)
                 try:
                     result, path = future.result()
                 except Exception as exc:
                     err = '在下载图片 %r 时抛出了异常: %s'
-                    self.logger.error(Fore.RED + err % (large['photo_id'], exc))
+                    self.logger.error(''.join([Fore.RED, count_msg, err % (large['photo_id'], exc)]))
                 else:
                     style = result and Style.NORMAL or Style.DIM
-                    self.logger.info(Fore.GREEN + style + path)
+                    self.logger.info(''.join([Fore.GREEN, style, count_msg, path]))
             else:
                 self.logger.info(Fore.BLUE + '《%s》 已完成' % album['caption'])
 
-    @staticmethod
-    def download_pic(pic, path):
+    def download_pic(self, pic, path):
         """
         下载单个图片
         :param pic: 图片数据
         :param path: 存储路径
         :return: bool 下载结果, str 下载路径
         """
-        path = os.path.join(path, pic['pic_name'])
+        path = os.path.join(path, self.__make_photo_name(pic))
         if not os.path.exists(path):
             url = WeiboApi.make_large_url(pic)
             response = WeiboApi.get(url)
@@ -137,3 +143,12 @@ class Crawler(object):
         if not os.path.exists(album_path):
             os.mkdir(album_path)
         return album_path
+
+    def __make_photo_name(self, large):
+        """
+        生成图片文件名
+        :param large: 图片数据
+        :return: str 文件名
+        """
+        f, p = large.get('feed_id'), large['pic_name']
+        return '_'.join(f and [f, p] or [p])

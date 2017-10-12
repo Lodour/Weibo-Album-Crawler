@@ -1,9 +1,11 @@
 # coding=utf-8
 import json
+import logging
 import re
 from time import time
 
 import requests
+from colorama import Style
 
 from weibo.utils import load_cookies
 
@@ -60,6 +62,7 @@ class WeiboApi(object):
         :param url: 主页url
         :return: 用户uid
         """
+        logging.info(Style.DIM + 'fetch_uid: %r' % url)
         content = WeiboApi.get(url).text
         return Pattern.OID.search(content).group('oid')
 
@@ -70,6 +73,7 @@ class WeiboApi(object):
         :param uid: 用户id
         :return: str
         """
+        logging.info(Style.DIM + 'fetch_name: %r' % uid)
         content = WeiboApi.get(Formatter.INDEX_URL(uid=uid)).text
         return Pattern.NAME.search(content).group('name')
 

@@ -80,7 +80,7 @@ class WeiboApi(object):
         :param uid: 用户id
         :param page: 相册列表-页号
         :param count: 相册列表-页长
-        :return: list
+        :return: int 相册总数, list 相册列表
         """
         params = {
             'uid': uid,
@@ -89,7 +89,7 @@ class WeiboApi(object):
             '__rnd': WeiboApi.make_rnd()
         }
         data = WeiboApi.get_json(Url.ALBUM_LIST, params=params)
-        return data['data']['album_list']
+        return data['data']['total'], data['data']['album_list']
 
     @staticmethod
     def fetch_photo_list(uid, album_id, type, page=1, count=30):
@@ -139,11 +139,11 @@ class WeiboApi(object):
         return int(time() * 1000)
 
     @staticmethod
-    def make_large_url(pic_host, pic_name):
+    def make_large_url(large_pic):
         """
         生成大图下载url
-        :param pic_host: 图片host
-        :param pic_name: 图片name
+        :param large_pic: 大图数据
         :return: str
         """
-        return Formatter.LARGE_URL(host=pic_host, name=pic_name)
+        host, name = large_pic['pic_host'], large_pic['pic_name']
+        return Formatter.LARGE_URL(host=host, name=name)

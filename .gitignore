@@ -6,6 +6,7 @@ env/
 
 # Compile result
 __pycache__/
+*.pyc
 
 # Private files
 downloads/

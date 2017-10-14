@@ -1,24 +1,21 @@
 # coding=utf-8
 import json
-import logging
 import re
 from time import time
 
 import requests
-from colorama import Style
 
 from weibo.utils import load_cookies
 
 
 class Url(object):
     ALBUM_LIST = 'http://photo.weibo.com/albums/get_all'
-    PHOTO_LIST = 'http://photo.weibo.com/photos/get_all'
+    PHOTO_IDS = 'http://photo.weibo.com/photos/get_photo_ids'
     LARGE_LIST = 'http://photo.weibo.com/photos/get_multiple'
 
 
 class Pattern(object):
-    OID = re.compile(r"\$CONFIG\['oid'\]='(?P<oid>\d+)';")
-    NAME = re.compile(r"\$CONFIG\['onick'\]='(?P<name>.*)';")
+    CONFIG = re.compile(r"\$CONFIG\['(?P<key>.*)'\]='(?P<value>.*)';")
 
 
 class Formatter(object):
@@ -29,7 +26,7 @@ class Formatter(object):
 class WeiboApi(object):
     """
     微博API
-    访问流程: url -> id -> albums -> photo_ids(batch) -> large_pics(batch)
+    访问流程: url -> id -> albums -> photo_ids(all) -> large_pics(batch)
     """
 
     COOKIES = load_cookies()
@@ -48,34 +45,22 @@ class WeiboApi(object):
     @staticmethod
     def get_json(*args, **kwargs):
         """
-        获取response中的json数据
+        获取response中的json数据的data域
         :param args: see get
         :param kwargs: see get
         :return: dict
         """
-        return json.loads(WeiboApi.get(*args, **kwargs).text)
+        return json.loads(WeiboApi.get(*args, **kwargs).text)['data']
 
     @staticmethod
-    def fetch_uid(url):
+    def fetch_user_info(url):
         """
-        从任意用户的主页获取其uid，即html中的oid
+        从任意用户的主页获取其相关数据
         :param url: 主页url
-        :return: 用户uid
+        :return: dict
         """
-        logging.info(Style.DIM + 'fetch_uid: %r' % url)
         content = WeiboApi.get(url).text
-        return Pattern.OID.search(content).group('oid')
-
-    @staticmethod
-    def fetch_name(uid):
-        """
-        获取指定用户的微博名
-        :param uid: 用户id
-        :return: str
-        """
-        logging.info(Style.DIM + 'fetch_name: %r' % uid)
-        content = WeiboApi.get(Formatter.INDEX_URL(uid=uid)).text
-        return Pattern.NAME.search(content).group('name')
+        return dict(Pattern.CONFIG.findall(content))
 
     @staticmethod
     def fetch_album_list(uid, page=1, count=20):
@@ -93,29 +78,24 @@ class WeiboApi(object):
             '__rnd': WeiboApi.make_rnd()
         }
         data = WeiboApi.get_json(Url.ALBUM_LIST, params=params)
-        return data['data']['total'], data['data']['album_list']
+        return data['total'], data['album_list']
 
     @staticmethod
-    def fetch_photo_list(uid, album_id, type, page=1, count=30):
+    def fetch_photo_ids(uid, album_id, type):
         """
         获取相册的图片列表
         :param uid: 用户id
         :param album_id: 相册id
         :param type: 相册类型
-        :param page: 图片列表-页号
-        :param count: 图片列表-页长
         :return: list
         """
         params = {
             'uid': uid,
             'album_id': album_id,
             'type': type,
-            'page': page,
-            'count': count,
             '__rnd': WeiboApi.make_rnd()
         }
-        data = WeiboApi.get_json(Url.PHOTO_LIST, params=params)
-        return data['data']['photo_list']
+        return WeiboApi.get_json(Url.PHOTO_IDS, params=params)
 
     @staticmethod
     def fetch_large_list(uid, ids, type):
@@ -132,7 +112,7 @@ class WeiboApi(object):
             'type': type
         }
         data = WeiboApi.get_json(Url.LARGE_LIST, params=params)
-        return list(data['data'].values())
+        return list(data.values())
 
     @staticmethod
     def make_rnd():

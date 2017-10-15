@@ -122,7 +122,7 @@ class Crawler(object):
         path = os.path.join(path, self.__make_photo_name(pic))
         if not os.path.exists(path):
             url = WeiboApi.make_large_url(pic)
-            response = WeiboApi.get(url, timeout=2)
+            response = WeiboApi.get(url, timeout=60)
             with open(path, 'wb') as fp:
                 fp.write(response.content)
             return True, path

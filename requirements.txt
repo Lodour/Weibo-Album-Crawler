@@ -1,7 +1,11 @@
 appdirs==1.4.0
-colorama==0.3.7
-futures==3.0.5
+certifi==2017.7.27.1
+chardet==3.0.4
+colorama==0.3.9
+futures==3.1.1
+idna==2.6
 packaging==16.8
 pyparsing==2.1.10
-requests==2.13.0
+requests==2.18.4
 six==1.10.0
+urllib3==1.22

@@ -6,7 +6,7 @@
 ## Usage
 1. 安装
 
-    ```
+    ```shell
     git clone git@github.com:Lodour/Weibo-Album-Crawler.git
     cd Weibo-Album-Crawler
     virtualenv env -p=python3.5

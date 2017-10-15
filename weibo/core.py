@@ -73,8 +73,8 @@ class Crawler(object):
                 try:
                     result, path = future.result()
                 except Exception as exc:
-                    err = '在下载图片 %r 时抛出了异常: %s'
-                    self.logger.error(''.join([Fore.RED, count_msg, err % (large['photo_id'], exc)]))
+                    err = '%s 抛出了异常: %s' % (WeiboApi.make_large_url(large), exc)
+                    self.logger.error(''.join([Fore.RED, count_msg, err]))
                 else:
                     style = result and Style.NORMAL or Style.DIM
                     self.logger.info(''.join([Fore.GREEN, style, count_msg, path]))
@@ -122,8 +122,9 @@ class Crawler(object):
         path = os.path.join(path, self.__make_photo_name(pic))
         if not os.path.exists(path):
             url = WeiboApi.make_large_url(pic)
+            response = WeiboApi.get(url, timeout=2)
             with open(path, 'wb') as fp:
-                fp.write(WeiboApi.get(url).content)
+                fp.write(response.content)
             return True, path
         return False, path
 

@@ -112,7 +112,7 @@ class WeiboApi(object):
             'type': type
         }
         data = WeiboApi.get_json(Url.LARGE_LIST, params=params)
-        return list(data.values())
+        return filter(None.__ne__, data.values())
 
     @staticmethod
     def make_rnd():

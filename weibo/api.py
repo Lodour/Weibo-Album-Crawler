@@ -5,7 +5,7 @@ from time import time
 
 import requests
 
-from weibo.utils import load_cookies
+import settings
 
 
 class Url(object):
@@ -23,13 +23,22 @@ class Formatter(object):
     LARGE_URL = '{host}/large/{name}'.format
 
 
+def _load_cookies():
+    """
+    从设置中解析cookies
+    :return: dict
+    """
+    assert settings.COOKIES, '请在`settings.py`中粘贴cookies'
+    return dict([l.split('=') for l in settings.COOKIES.split('; ')])
+
+
 class WeiboApi(object):
     """
     微博API
     访问流程: url -> id -> albums -> photo_ids(all) -> large_pics(batch)
     """
 
-    COOKIES = load_cookies()
+    COOKIES = _load_cookies()
 
     @staticmethod
     def get(*args, **kwargs):

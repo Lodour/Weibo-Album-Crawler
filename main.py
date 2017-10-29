@@ -1,5 +1,5 @@
-import settings
 from weibo.core import Crawler
+from weibo.utils import load_targets
 
-for target in settings.TARGETS:
+for target in load_targets():
     Crawler(target).start()

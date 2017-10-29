@@ -16,13 +16,15 @@ class Crawler(object):
         初始化
         :param target_url: 目标微博主页url
         """
+        self.logger = logging.getLogger(self.__class__.__name__)
+
         # 目标数据
+        self.logger.info(Fore.BLUE + target_url)
         self.target = WeiboApi.fetch_user_info(target_url)
         self.uid, self.name = self.target['oid'], self.target['onick']
 
         # 本地预处理
         self.root = self.__init_folder()
-        self.logger = logging.getLogger(self.__class__.__name__)
 
     def start(self):
         """

@@ -9,7 +9,7 @@
     ```shell
     git clone git@github.com:Lodour/Weibo-Album-Crawler.git
     cd Weibo-Album-Crawler
-    virtualenv env -p=python3.5
+    virtualenv env --python=python3.5
     source ./env/bin/activate
     pip install -r requirements.txt
     mv settings.sample.py settings.py

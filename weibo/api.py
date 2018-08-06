@@ -23,22 +23,30 @@ class Formatter(object):
     LARGE_URL = '{host}/large/{name}'.format
 
 
-def _load_cookies():
+def _load_headers(url):
     """
     从设置中解析cookies
     :return: dict
     """
     assert settings.COOKIES, '请在`settings.py`中粘贴cookies'
-    return dict([l.split('=') for l in settings.COOKIES.split('; ')])
-
+    spltAr = url.split("://");
+    i = (0,1)[len(spltAr)>1];
+    dm = spltAr[i].split("?")[0].split('/')[0].split(':')[0].lower();
+    headers = {"Host": dm,
+    "Connection": "keep-alive",
+    "Pragma": "no-cache",
+    "Cache-Control": "no-cache",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36",
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+    "Cookie": settings.COOKIES}
+    return headers
 
 class WeiboApi(object):
     """
     微博API
     访问流程: url -> id -> albums -> photo_ids(all) -> large_pics(batch)
     """
-
-    COOKIES = _load_cookies()
 
     @staticmethod
     def get(*args, **kwargs):
@@ -48,7 +56,10 @@ class WeiboApi(object):
         :param kwargs: see request.get
         :return: request.Response
         """
-        kwargs.setdefault('cookies', WeiboApi.COOKIES)
+        for i in args:
+            if(i[0:4]=='http'):
+                url = i
+        kwargs.setdefault('headers', _load_headers(url))
         return requests.get(*args, **kwargs)
 
     @staticmethod

@@ -29,7 +29,7 @@ def _load_cookies():
     :return: dict
     """
     assert settings.COOKIES, '请在`settings.py`中粘贴cookies'
-    return dict([l.split('=') for l in settings.COOKIES.split('; ')])
+    return dict([l.split('=', 1) for l in settings.COOKIES.split('; ')])
 
 
 class WeiboApi(object):

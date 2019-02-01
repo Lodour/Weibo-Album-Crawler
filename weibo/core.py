@@ -21,7 +21,12 @@ class Crawler(object):
         # 目标数据
         self.logger.info(Fore.BLUE + target_url)
         self.target = WeiboApi.fetch_user_info(target_url)
-        self.uid, self.name = self.target['oid'], self.target['onick']
+        try:
+            self.uid, self.name = self.target['oid'], self.target['onick']
+        except KeyError as err:
+            message = '获取 %s 失败，可能原因为 Cookies 过期，或 API 发生变化。' % err
+            self.logger.error(Fore.RED + message)
+            exit(-1)
 
         # 本地预处理
         self.root = self.__init_folder()

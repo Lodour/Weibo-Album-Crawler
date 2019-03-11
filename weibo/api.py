@@ -6,6 +6,7 @@ from time import time
 import requests
 
 import settings
+from weibo.browser import WeiboBrowser
 
 
 class Url(object):
@@ -28,6 +29,9 @@ def _load_cookies():
     从设置中解析cookies
     :return: dict
     """
+    if settings.COOKIES == 'AUTO':
+        with WeiboBrowser() as weibo:
+            return weibo.get_cookies()
     assert settings.COOKIES, '请在`settings.py`中粘贴cookies'
     return dict([l.split('=', 1) for l in settings.COOKIES.split('; ')])
 

@@ -18,7 +18,7 @@
 2. 设置`settings.py`
 
     * `STORE_PATH` 下载目录
-    * `COOKIES` 任意用户微博的cookies
+    * `COOKIES` 任意用户微博的 Cookies，或设置为 `AUTO` 以自动获取（需安装 ChromeDriver）
     * `TARGETS` 目标用户的微博主页url
 
 3. 运行

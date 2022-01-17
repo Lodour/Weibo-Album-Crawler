@@ -1,5 +1,5 @@
-from weibo.core import Crawler
-from weibo.utils import load_targets
+from scrapy.cmdline import execute
 
-for target in load_targets():
-    Crawler(target).start()
+if __name__ == '__main__':
+    cmd = 'scrapy crawl video'
+    execute(cmd.split())

@@ -14,6 +14,7 @@ class VideoSpider(scrapy.Spider):
     media_cache_key = 'mid'
     media_results_key = 'files'
     download_warnsize = 100 << 20  # 100 MB
+    download_timeout = 10 * 60  # 10 min
     video_keys = ['mp4_720p_mp4', 'mp4_hd_url', 'mp4_sd_url']
 
     def start_requests(self):

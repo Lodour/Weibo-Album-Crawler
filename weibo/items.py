@@ -20,3 +20,12 @@ class ImageItem(scrapy.Item):
 
     image_urls = scrapy.Field()
     images = scrapy.Field()
+
+
+class VideoItem(scrapy.Item):
+    uid = scrapy.Field()
+    uname = scrapy.Field()
+    mid = scrapy.Field()
+
+    file_urls = scrapy.Field()
+    files = scrapy.Field()

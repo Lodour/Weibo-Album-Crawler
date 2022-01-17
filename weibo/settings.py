@@ -63,11 +63,13 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'weibo.pipelines.MediaKeyDuplicatesPipeline': 300,
-   'weibo.pipelines.WeiboImagesPipeline': 310,
-   'weibo.pipelines.MediaKeyCachePipeline': 320,
+   'weibo.pipelines.cache.MediaKeyDuplicatesPipeline': 300,
+   'weibo.pipelines.media.WeiboImagesPipeline': 310,
+   'weibo.pipelines.media.WeiboVideosPipeline': 310,
+   'weibo.pipelines.cache.MediaKeyCachePipeline': 320,
 }
 IMAGES_STORE = './downloads'
+FILES_STORE = './downloads'
 CACHE_FILE = './downloads/cache.pkl'
 
 LOG_FORMATTER = 'weibo.utils.WeiboLogFormatter'
@@ -92,5 +94,3 @@ LOG_FORMATTER = 'weibo.utils.WeiboLogFormatter'
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-
-COOKIES = 'SINAGLOBAL=3842938301320.924.1638566098736; ULV=1638566098739:1:1:1:3842938301320.924.1638566098736:; XSRF-TOKEN=GPWRZkZV7omrKE5eNWVS-zP5; SSOLoginState=1642300421; WBPSESS=RfOIj0SLh4cA64kv9ZQrIi2LFOfYQEfchRcuKqxkKTkAKkiqqCssJhAKgQdN64N3Ltg9p4z_JRHp-symzbopvxwCN85jm1FCIVzMMYKLkql8nmAqILP4NI4PADDR8u-e-9Unz_OZHOE7INQB4oyRwQ==; SCF=Aud8cMJh_34pTmrmltAYktWEIj8uvCyeG-bway3QLP2cFBcalqhl5hLqSVJuA0EgncVYXUwDBV-mQ2IcEFg7VR4.; SUB=_2A25M4KxxDeRhGeRH6VEW9inOwz6IHXVvl5q5rDV8PUNbmtAfLW_wkW9NTckdWBGXm0-o91sdZY-yXu6MwiLdZ1_a; SUBP=0033WrSXqPxfM725Ws9jqgMF55529P9D9Whn0kGq.c3oulD0RyiQGEwh5JpX5KMhUgL.Foz4eoeNSoME1hz2dJLoIf4hIsHVi--fi-z7iKysi--Xi-iFiK.4i--fi-2fi-z0i--NiKLWiKnXi--Xi-zRiKn7i--fiKysi-8Wi--ciK.4i-zXi--fi-2Xi-24i--fi-z7iKysi--NiKyhi-8W; ALF=1673924511'

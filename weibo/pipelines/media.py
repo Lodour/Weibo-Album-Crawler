@@ -10,6 +10,11 @@ from weibo.items import ImageItem, VideoItem
 
 
 class WeiboMediaPipelineMixin(object):
+    """
+    Mixin class for media pipelines.
+
+    Set the `item_type` attribute to let the pipeline ignore other item types.
+    """
     item_type: Type[scrapy.Item]
 
     def process_item(self, item, spider):
@@ -19,6 +24,12 @@ class WeiboMediaPipelineMixin(object):
 
 
 class WeiboImagesPipeline(WeiboMediaPipelineMixin, ImagesPipeline):
+    """
+    Pipeline to download images.
+
+    Save images to "IMAGES_STORE / ID_NAME / MID_IMAGE.jpg"
+    """
+
     item_type = ImageItem
 
     def file_path(self, request, response=None, info=None, *, item=None):
@@ -28,6 +39,12 @@ class WeiboImagesPipeline(WeiboMediaPipelineMixin, ImagesPipeline):
 
 
 class WeiboVideosPipeline(WeiboMediaPipelineMixin, FilesPipeline):
+    """
+    Pipeline to download videos.
+
+    Save videos to "FILES_STORE / ID_NAME / MID.mp4"
+    """
+
     item_type = VideoItem
 
     def file_path(self, request, response=None, info=None, *, item=None):

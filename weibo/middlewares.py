@@ -108,6 +108,9 @@ class WeiboDownloaderMiddleware:
 
 
 class CustomCookiesMiddleware(object):
+    """
+    Add custom cookies to each request.
+    """
 
     def __init__(self):
         cookies = SimpleCookie()
@@ -119,6 +122,9 @@ class CustomCookiesMiddleware(object):
 
 
 class WeiboAPIMiddleware(object):
+    """
+    Extract the "data" field of api responses.
+    """
 
     def process_response(self, request, response, spider):
         if 'ajax' in response.url:

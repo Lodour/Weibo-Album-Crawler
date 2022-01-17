@@ -16,6 +16,7 @@ class ImageItem(scrapy.Item):
     uid = scrapy.Field()
     uname = scrapy.Field()
     mid = scrapy.Field()
+    pid = scrapy.Field()
 
     image_urls = scrapy.Field()
     images = scrapy.Field()

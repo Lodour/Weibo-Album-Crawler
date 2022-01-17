@@ -1,5 +1,4 @@
 import os.path
-from collections import defaultdict
 from urllib.parse import urlparse
 
 import scrapy
@@ -12,6 +11,7 @@ from weibo.items import ImageItem
 class ImageSpider(scrapy.Spider):
     name = 'image'
     allowed_domains = ['weibo.com']
+    media_cache_key = 'pid'
 
     def start_requests(self):
         for target in configs.TARGETS:
@@ -33,12 +33,7 @@ class ImageSpider(scrapy.Spider):
         since = data['since_id']
         yield scrapy.Request(api.get_image_wall(uid, since), callback=self.parse_image_wall, meta=response.meta)
 
-        # collect images by mid
-        image_urls_of_mid = defaultdict(list)
+        # yield all images
         for image in data['list']:
             pid, mid = image['pid'], image['mid']
-            image_urls_of_mid[mid].append(api.large_image(pid))
-
-        # yield images by mid
-        for mid, image_urls in image_urls_of_mid.items():
-            yield ImageItem(uid=uid, uname=uname, mid=mid, image_urls=image_urls)
+            yield ImageItem(uid=uid, uname=uname, mid=mid, pid=pid, image_urls=[api.large_image(pid)])

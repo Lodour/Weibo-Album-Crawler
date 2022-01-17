@@ -63,9 +63,14 @@ DOWNLOADER_MIDDLEWARES = {
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
-   'weibo.pipelines.WeiboImagesPipeline': 300,
+   'weibo.pipelines.MediaKeyDuplicatesPipeline': 300,
+   'weibo.pipelines.WeiboImagesPipeline': 310,
+   'weibo.pipelines.MediaKeyCachePipeline': 320,
 }
 IMAGES_STORE = './downloads'
+CACHE_FILE = './downloads/cache.pkl'
+
+LOG_FORMATTER = 'weibo.utils.WeiboLogFormatter'
 
 # Enable and configure the AutoThrottle extension (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/autothrottle.html

@@ -6,6 +6,7 @@
 #     https://docs.scrapy.org/en/latest/topics/settings.html
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
+from weibo import configs
 
 BOT_NAME = 'weibo'
 
@@ -69,9 +70,9 @@ ITEM_PIPELINES = {
    'weibo.pipelines.media.WeiboVideosPipeline': 310,
    'weibo.pipelines.cache.MediaKeyCachePipeline': 320,
 }
-IMAGES_STORE = './downloads'
-FILES_STORE = './downloads'
-CACHE_FILE = './downloads/cache.pkl'
+IMAGES_STORE = configs.IMAGES_STORE
+FILES_STORE = configs.VIDEOS_STORE
+CACHE_FILE = configs.CACHE_FILE
 
 LOG_FORMATTER = 'weibo.utils.WeiboLogFormatter'
 

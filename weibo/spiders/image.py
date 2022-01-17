@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 import scrapy
 
-from weibo import api
+from weibo import api, utils
 from weibo import configs
 from weibo.items import ImageItem
 
@@ -23,6 +23,7 @@ class ImageSpider(scrapy.Spider):
         user = response.json()['user']
         uid, uname = user['id'], user['screen_name']
         meta = {'uid': uid, 'uname': uname}
+        utils.migrate_folder_if_any(configs.IMAGES_STORE, uid, uname)
         yield scrapy.Request(api.get_image_wall(uid), callback=self.parse_image_wall, meta=meta)
 
     def parse_image_wall(self, response):

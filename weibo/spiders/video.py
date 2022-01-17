@@ -3,7 +3,7 @@ from urllib.parse import urlparse
 
 import scrapy
 
-from weibo import api
+from weibo import api, utils
 from weibo import configs
 from weibo.items import VideoItem
 
@@ -25,6 +25,7 @@ class VideoSpider(scrapy.Spider):
         user = response.json()['user']
         uid, uname = user['id'], user['screen_name']
         meta = {'uid': uid, 'uname': uname}
+        utils.migrate_folder_if_any(configs.VIDEOS_STORE, uid, uname)
         yield scrapy.Request(api.get_water_fall(uid), callback=self.parse_water_fall, meta=meta)
 
     def parse_water_fall(self, response):

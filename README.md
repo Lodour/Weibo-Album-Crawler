@@ -1,29 +1,32 @@
-# Weibo Album Crawler 
-![python](https://img.shields.io/badge/python-3.5-ff69b4.svg)
+# Weibo Album Crawler
 
-新浪微博相册多线程爬虫。
+![python](https://img.shields.io/badge/python-3.10-blue)
+![scrapy](https://img.shields.io/badge/scrapy-v2.5-blue)
 
-## Usage
-1. 安装
+基于 Scrapy 的新浪微博爬虫，支持相册、视频等。
 
-    ```shell
-    git clone git@github.com:Lodour/Weibo-Album-Crawler.git
-    cd Weibo-Album-Crawler
-    virtualenv env --python=python3.5
-    source ./env/bin/activate
-    pip install -r requirements.txt
-    mv settings.sample.py settings.py
-    ```
+## 设置环境
 
-2. 设置`settings.py`
+```shell
+conda create -n weibo python=3.10
+conda activate weibo
+pip install scrapy
+```
 
-    * `STORE_PATH` 下载目录
-    * `COOKIES` 任意用户微博的 Cookies，或设置为 `AUTO` 以自动获取（需安装 ChromeDriver）
-    * `TARGETS` 目标用户的微博主页url
+## 配置爬虫
 
-3. 运行
+* `weibo/settings.py`
+    * 图片下载目录 `IMAGES_STORE`
+    * 视频下载目录 `FILES_STORE`
 
-    `python main.py`
+* `weibo/configs.py`
+    * 生成配置文件 `cp weibo/configs.example.py weibo/configs.py`
+    * 手动复制粘贴登录后的 cookies 至 `COOKIES`
+    * 目标主页 `TARGETS`
 
-## License
-[MIT License](https://github.com/Lodour/Weibo-Album-Crawler/blob/master/LICENSE)
+## 运行
+
+```shell
+scrapy crawl image
+scrapy crawl video
+```

@@ -1,29 +1,14 @@
-# coding=utf-8
 import logging
-import os
-import re
 
-from colorama import Fore
-
-import settings
-from weibo.api import Formatter
+from scrapy import logformatter
 
 
-def load_targets_from_folder():
+class WeiboLogFormatter(logformatter.LogFormatter):
     """
-    从指定的文件夹中加载已下载的目标
-    :return: list
+    Set DropItem to the debug level because we need to drop a lot of items.
     """
-    if not os.path.exists(settings.STORE_PATH):
-        logging.info(Fore.YELLOW + '`settings.STORE_PATH`指定路径不存在，解析目标失败')
-        return []
-    matches = map(lambda x: re.search(r'(?P<id>\d+)-.+', x), os.listdir(settings.STORE_PATH))
-    targets = map(lambda x: Formatter.INDEX_URL(uid=x.group('id')), filter(None.__ne__, matches))
-    return targets
 
-
-def load_targets():
-    if not settings.TARGETS:
-        logging.info(Fore.YELLOW + '`settings.TARGETS`为空，尝试从`settings.STORE_PATH`中解析目标')
-        return load_targets_from_folder()
-    return settings.TARGETS
+    def dropped(self, item, exception, response, spider):
+        formatter = super().dropped(item, exception, response, spider)
+        formatter['level'] = logging.DEBUG
+        return formatter

@@ -12,6 +12,7 @@ class ImageSpider(scrapy.Spider):
     name = 'image'
     allowed_domains = ['weibo.com']
     media_cache_key = 'pid'
+    media_results_key = 'images'
 
     def start_requests(self):
         for target in configs.TARGETS:

@@ -66,12 +66,6 @@ class WeiboDownloaderMiddleware:
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
 
-    def __init__(self):
-        # load cookies from configs
-        cookies = SimpleCookie()
-        cookies.load(configs.COOKIES)
-        self.cookies = {k: m.value for k, m in cookies.items()}
-
     @classmethod
     def from_crawler(cls, crawler):
         s = cls()
@@ -88,10 +82,6 @@ class WeiboDownloaderMiddleware:
         # - or return a Request object
         # - or raise IgnoreRequest: process_exception() methods of
         #   installed downloader middleware will be called
-
-        # set cookies for each request
-        request.cookies = self.cookies
-
         return None
 
     def process_response(self, request, response, spider):
@@ -101,19 +91,6 @@ class WeiboDownloaderMiddleware:
         # - return a Response object
         # - return a Request object
         # - or raise IgnoreRequest
-
-        # extract the data field from ajax responses
-        if 'ajax' in response.url:
-            try:
-                json = response.json()
-            except JSONDecodeError:
-                raise IgnoreRequest(f'Cookie expired or API changed: cannot parse json from {response.url}')
-
-            if json.get('ok') != 1 or 'data' not in json:
-                raise IgnoreRequest(f'API {response.url} returns invalid data: {json}')
-
-            response._cached_decoded_json = json['data']
-
         return response
 
     def process_exception(self, request, exception, spider):
@@ -128,3 +105,31 @@ class WeiboDownloaderMiddleware:
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class CustomCookiesMiddleware(object):
+
+    def __init__(self):
+        cookies = SimpleCookie()
+        cookies.load(configs.COOKIES)
+        self.cookies = {k: m.value for k, m in cookies.items()}
+
+    def process_request(self, request, spider):
+        request.cookies = self.cookies
+
+
+class WeiboAPIMiddleware(object):
+
+    def process_response(self, request, response, spider):
+        if 'ajax' in response.url:
+            try:
+                json = response.json()
+            except JSONDecodeError:
+                raise IgnoreRequest(f'Cookie expired or API changed: cannot parse json from {response.url}')
+
+            if json.get('ok') != 1 or 'data' not in json:
+                raise IgnoreRequest(f'API {response.url} returns invalid data: {json}')
+
+            response._cached_decoded_json = json['data']
+
+        return response

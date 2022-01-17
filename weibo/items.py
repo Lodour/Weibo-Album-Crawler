@@ -10,3 +10,12 @@ class WeiboItem(scrapy.Item):
     # define the fields for your item here like:
     # name = scrapy.Field()
     pass
+
+
+class ImageItem(scrapy.Item):
+    uid = scrapy.Field()
+    uname = scrapy.Field()
+    mid = scrapy.Field()
+
+    image_urls = scrapy.Field()
+    images = scrapy.Field()

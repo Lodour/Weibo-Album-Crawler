@@ -16,13 +16,14 @@ pip install scrapy
 ## 配置爬虫
 
 * `weibo/settings.py`
-    * 图片下载目录 `IMAGES_STORE`
-    * 视频下载目录 `FILES_STORE`
+  * 并发请求数 `CONCURRENT_REQUESTS`
+  * 视频下载目录 `FILES_STORE`
 
 * `weibo/configs.py`
-    * 生成配置文件 `cp weibo/configs.example.py weibo/configs.py`
-    * 手动复制粘贴登录后的 cookies 至 `COOKIES`
-    * 目标主页 `TARGETS`
+  * 生成配置文件 `cp weibo/configs.example.py weibo/configs.py`
+  * 手动复制粘贴登录后的 cookies 至 `COOKIES`
+  * 目标主页 `TARGETS`
+  * 下载目录 `STORE_PATH`
 
 ## 运行
 

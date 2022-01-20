@@ -16,4 +16,4 @@ def get_water_fall(uid: str, cursor: str = '0') -> str:
 
 
 def large_image(pid: str, cdn: int = 1) -> str:
-    return f'https://wx{cdn}.sinaimg.cn/large/{pid}.jpg'
+    return f'https://wx{cdn}.sinaimg.cn/large/{pid}'

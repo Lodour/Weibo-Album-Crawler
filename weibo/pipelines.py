@@ -2,6 +2,16 @@ import os
 import pickle
 
 from scrapy.exceptions import DropItem
+from scrapy.pipelines.files import FilesPipeline
+
+
+class WeiboMediaPipeline(FilesPipeline):
+    """
+    Pipeline to download media files with specified filename.
+    """
+
+    def file_path(self, request, response=None, info=None, *, item=None):
+        return item['filename']
 
 
 class BaseMediaKeyCachePipeline(object):
@@ -10,10 +20,6 @@ class BaseMediaKeyCachePipeline(object):
 
     This pipeline cache keys of downloaded images / videos, so they will not be downloaded even if you deleted them.
     Useful if you want to delete unwanted files forever.
-
-    Requirement for spider:
-    - attribute `media_cache_key` to specify which field is used as the unique key.
-    - attribute `media_results_key` to specify which field is used to check success of downloads.
     """
 
     # do we need to load existing key cache?
@@ -38,14 +44,14 @@ class BaseMediaKeyCachePipeline(object):
 class MediaKeyDuplicatesPipeline(BaseMediaKeyCachePipeline):
     """
     Pipeline to drop items having cached keys.
+    Must be placed BEFORE downloading pipelines.
     """
 
     # preload cache to check duplicates
     preload_cache = True
 
     def process_item(self, item, spider):
-        key = item.get(spider.media_cache_key)
-        if key in self.keys_seen:
+        if item['uuid'] in self.keys_seen:
             raise DropItem(f'Duplicate media key found in item.')
         return item
 
@@ -53,6 +59,7 @@ class MediaKeyDuplicatesPipeline(BaseMediaKeyCachePipeline):
 class MediaKeyCachePipeline(BaseMediaKeyCachePipeline):
     """
     Pipeline to cache keys of newly downloaded items.
+    Must be placed AFTER downloading pipelines.
     """
 
     # no need to preload cache for updating
@@ -64,8 +71,6 @@ class MediaKeyCachePipeline(BaseMediaKeyCachePipeline):
             pickle.dump(cache, fp)
 
     def process_item(self, item, spider):
-        # only cache keys if the download succeeds
-        if item.get(spider.media_results_key):
-            key = item.get(spider.media_cache_key)
-            self.keys_seen.add(key)
+        if item['files']:
+            self.keys_seen.add(item['uuid'])
         return item

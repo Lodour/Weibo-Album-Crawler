@@ -2,6 +2,9 @@
 This file contains weibo configs for the spider.
 """
 
+STORE_PATH = './downloads'
+CACHE_FILE = f'{STORE_PATH}/cache.pkl'
+
 COOKIES = 'key=value; key=value; ...'
 
 TARGETS = [

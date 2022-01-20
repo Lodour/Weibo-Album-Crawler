@@ -7,25 +7,7 @@ import scrapy
 
 
 class WeiboItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
-
-
-class ImageItem(scrapy.Item):
-    uid = scrapy.Field()
-    uname = scrapy.Field()
-    mid = scrapy.Field()
-    pid = scrapy.Field()
-
-    image_urls = scrapy.Field()
-    images = scrapy.Field()
-
-
-class VideoItem(scrapy.Item):
-    uid = scrapy.Field()
-    uname = scrapy.Field()
-    mid = scrapy.Field()
-
+    uuid = scrapy.Field()  # as the cache key
+    filename = scrapy.Field()
     file_urls = scrapy.Field()
     files = scrapy.Field()

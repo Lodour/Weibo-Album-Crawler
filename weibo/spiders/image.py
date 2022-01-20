@@ -5,14 +5,12 @@ import scrapy
 
 from weibo import api, utils
 from weibo import configs
-from weibo.items import ImageItem
+from weibo.items import WeiboItem
 
 
 class ImageSpider(scrapy.Spider):
     name = 'image'
     allowed_domains = ['weibo.com']
-    media_cache_key = 'pid'
-    media_results_key = 'images'
 
     def start_requests(self):
         for target in configs.TARGETS:
@@ -20,16 +18,21 @@ class ImageSpider(scrapy.Spider):
             yield scrapy.Request(api.info(uid), callback=self.parse_info)
 
     def parse_info(self, response):
+        # prepare data
         user = response.json()['user']
         uid, uname = user['id'], user['screen_name']
-        meta = {'uid': uid, 'uname': uname}
-        utils.migrate_folder_if_any(configs.IMAGES_STORE, uid, uname)
+
+        # prepare user folder
+        folder = utils.prepare_folder(uid, uname, configs.STORE_PATH)
+
+        # start from the 1st page
+        meta = {'uid': uid, 'folder': folder}
         yield scrapy.Request(api.get_image_wall(uid), callback=self.parse_image_wall, meta=meta)
 
     def parse_image_wall(self, response):
         # prepare data
         data = response.json()
-        uid, uname = response.meta['uid'], response.meta['uname']
+        uid, folder = response.meta['uid'], response.meta['folder']
 
         # continue to next page
         since = data['since_id']
@@ -38,4 +41,5 @@ class ImageSpider(scrapy.Spider):
         # yield all images
         for image in data['list']:
             pid, mid = image['pid'], image['mid']
-            yield ImageItem(uid=uid, uname=uname, mid=mid, pid=pid, image_urls=[api.large_image(pid)])
+            filename = f'{folder}/{mid}_{pid}.jpg'
+            yield WeiboItem(uuid=pid, filename=filename, file_urls=[api.large_image(pid)])

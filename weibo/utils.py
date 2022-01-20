@@ -4,7 +4,7 @@ import os
 from scrapy import logformatter
 
 
-class WeiboLogFormatter(logformatter.LogFormatter):
+class LogFormatter(logformatter.LogFormatter):
     """
     Set DropItem to the debug level because we need to drop a lot of items.
     """
@@ -15,7 +15,7 @@ class WeiboLogFormatter(logformatter.LogFormatter):
         return formatter
 
 
-def migrate_folder_if_any(store_dir: str, uid: str, uname: str):
+def prepare_folder(uid: str, uname: str, store_dir: str):
     """
     Migrate a target's folder (with the ald uname, if any) to the new name.
     This is useful if some target changed their name.
@@ -28,3 +28,5 @@ def migrate_folder_if_any(store_dir: str, uid: str, uname: str):
             dst = os.path.join(store_dir, new_folder)
             os.rename(src, dst)
             break
+
+    return new_folder

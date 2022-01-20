@@ -50,6 +50,7 @@ class VideoSpider(scrapy.Spider):
                 case 'video':
                     urls = [video['media_info'][key] for key in self.video_keys]
                     url = urls[0] if urls else ''
+                    self.logger.info(f'{folder} found 1 video (from {response.url})')
                     yield WeiboItem(uuid=mid, filename=f'{folder}/{mid}.mp4', file_urls=[url])
 
                 case 'story':
@@ -58,4 +59,4 @@ class VideoSpider(scrapy.Spider):
                         yield WeiboItem(uuid=f'{mid}_{i}', filename=f'{folder}/{mid}_{i}.mp4', file_urls=[url])
 
                 case _:
-                    raise NotImplementedError(f'Unsupported video type "{video_type}".')
+                    self.logger.warning('Unknown video type "%s".', video_type)

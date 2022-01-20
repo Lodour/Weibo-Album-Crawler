@@ -39,6 +39,7 @@ class ImageSpider(scrapy.Spider):
         yield scrapy.Request(api.get_image_wall(uid, since), callback=self.parse_image_wall, meta=response.meta)
 
         # yield all images
+        self.logger.info(f'{folder} found {len(data["list"]):2d} images (from {response.url})')
         for image in data['list']:
             pid, mid = image['pid'], image['mid']
             filename = f'{folder}/{mid}_{pid}.jpg'
